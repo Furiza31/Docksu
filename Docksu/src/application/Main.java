@@ -2,10 +2,12 @@ package application;
 	
 import java.io.IOException;
 
-import application.view.AccueilController;
+import application.view.HomeController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXMLLoader;
 
@@ -13,13 +15,20 @@ import javafx.fxml.FXMLLoader;
 public class Main extends Application {
 	
 	private Workspace workspace;
+	private Stage primaryStage;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		System.out.println("Start");
-		afficherAccueil(primaryStage);
+		this.workspace = new Workspace(this);
+		this.primaryStage = primaryStage;
+		showHome();
 	}
 
+	/**
+	 * Main
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -32,30 +41,47 @@ public class Main extends Application {
 	@Override
 	public void init() throws Exception {
 		System.out.println("Init");
-		this.workspace = new Workspace();
 	}
 	
+	/**
+	 * Getter workspace
+	 * @return workspace
+	 */
 	public Workspace getWorkspace() {
 		return this.workspace;
 	}
 	
-	private void afficherAccueil(Stage primaryStage) {
+	/**
+	 * Show error
+	 * @param title
+	 * @param content
+	 */
+	public void error (String title, String content) {
+		Alert box = new Alert(AlertType.ERROR);
+		box.setTitle(title);
+		box.setContentText(content);
+		box.showAndWait();
+	}
+	
+	/**
+	 * Show the home page
+	 */
+	public void showHome() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("view/Accueil.fxml"));
+			loader.setLocation(Main.class.getResource("view/Home.fxml"));
 			
 			BorderPane body = loader.load();
-			AccueilController ctrl = loader.getController();
+			HomeController ctrl = loader.getController();
 			ctrl.setMain(this);
 			
 			Scene scene = new Scene(body);
-			primaryStage.setScene(scene);
-			primaryStage.setTitle("Accueil");
-			primaryStage.show();
+			this.primaryStage.setScene(scene);
+			this.primaryStage.setTitle("Accueil");
+			this.primaryStage.show();
 		} catch (IOException e) {
-			System.out.println("Accueil.fxml non disponible");
+			this.error("Chargement de la vue", "Ressource \"Home.fxml\" non disponible");
 			System.exit(1);
 		}
-		
 	}
 }

@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 import application.Main;
 import javafx.fxml.Initializable;
 
-public class AccueilController implements Initializable {
+public class HomeController implements Initializable {
 	
 	private Main main;
 
@@ -15,6 +15,10 @@ public class AccueilController implements Initializable {
 
 	}
 
+	/**
+	 * Setter main
+	 * @param pfMain
+	 */
 	public void setMain(Main pfMain) {
 		this.main = pfMain;
 	}
