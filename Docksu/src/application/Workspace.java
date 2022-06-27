@@ -7,7 +7,7 @@ public class Workspace {
 	
 	private File workspace;
 	private Main main;
-	private ArrayList<WorkspaceFile> workspaceContent;
+	private ArrayList<File> data;
 	
 	public Workspace(Main pfMain) {
 		this.workspace = new File(System.getProperty("user.dir") + "\\Workspace");
@@ -18,35 +18,27 @@ public class Workspace {
 				System.exit(1);
 			}
 		}
-		this.workspaceContent = new ArrayList<WorkspaceFile>();
-		this.read(null);
+		this.data = new ArrayList<File>();
+		this.read(this.workspace);
 	}
-
+	
 	/**
-	 * Read the workspace Folder
+	 * Read the workspace folder (recursive)
+	 * @param folder
 	 */
-	private void read(WorkspaceFile pfParent) {
-		if (pfParent == null) {
-			for (File file : workspace.listFiles()) {
-				if (file.isDirectory()) {
-					WorkspaceFile parent = new WorkspaceFile(file.getName(), WorkspaceFileType.FOLDER);
-					this.workspaceContent.add(parent);
-					this.read(parent);
-				} else {
-					this.workspaceContent.add(new WorkspaceFile(file.getName(), WorkspaceFileType.FILE));
-				}
-			}
-		} else {
-			for (File file : pfParent.getFile().listFiles()) {
-				if (file.isDirectory()) {
-					WorkspaceFile parent = new WorkspaceFile(pfParent ,file.getName(), WorkspaceFileType.FOLDER);
-					this.workspaceContent.add(parent);
-					this.read(parent);
-				} else {
-					this.workspaceContent.add(new WorkspaceFile(pfParent ,file.getName(), WorkspaceFileType.FILE));
-				}
-			}
+	private void read(File folder) {
+		for (File fileEntry: folder.listFiles()) {
+			if (fileEntry.isDirectory()) read(fileEntry);
+			else this.data.add(fileEntry);
 		}
+	}
+	
+	/**
+	 * Getter data
+	 * @return data of the workspace
+	 */
+	public ArrayList<File> getData() {
+		return this.data;
 	}
 	
 	/**
