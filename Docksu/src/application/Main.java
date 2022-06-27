@@ -81,6 +81,7 @@ public class Main extends Application {
 			this.primaryStage.show();
 		} catch (IOException e) {
 			this.error("Chargement de la vue", "Ressource \"Home.fxml\" non disponible");
+			System.out.println(e);
 			System.exit(1);
 		}
 	}
