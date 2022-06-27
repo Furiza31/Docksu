@@ -52,6 +52,14 @@ public class Main extends Application {
 	}
 	
 	/**
+	 * Getter primaryStage
+	 * @return primaryStage
+	 */
+	public Stage getPrimaryStage() {
+		return this.primaryStage;
+	}
+	
+	/**
 	 * Show error
 	 * @param title
 	 * @param content

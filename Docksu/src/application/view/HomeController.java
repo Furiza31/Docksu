@@ -1,6 +1,10 @@
 package application.view;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import application.Main;
@@ -11,23 +15,26 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeView;
 
 public class HomeController implements Initializable {
-	
+
 	private Main main;
-	
+
 	@FXML
-	TextField searchBar;
-	
+	private TextField textField;
+
 	@FXML
-	Button newFile;
-	
+	private Button newFile;
+
 	@FXML
-	Button newFolder;
+	private Button newFolder;
+
+	@FXML
+	private TreeView<File> treeView;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		newFile.setOnAction(event -> newFile());
 		newFolder.setOnAction(event -> newFolder());
-		searchBar.textProperty().addListener((observable, oldValue, newValue) -> searchBar(newValue));
+		textField.textProperty().addListener((observable, oldValue, newValue) -> searchBar(newValue));
 	}
 
 	private void searchBar(String research) {
@@ -38,12 +45,46 @@ public class HomeController implements Initializable {
 		System.out.println("New folder");
 	}
 
+	/**
+	 * Create a new File in the selected folder
+	 * If file is selected, the parent folder will be selected
+	 * If nothing is selected, the workspace folder will be selected
+	 */
 	private void newFile() {
-		System.out.println("New File");
+		File f;
+		if (!this.textField.getText().isEmpty()) {
+			if (!Objects.isNull(this.treeView.getSelectionModel().getSelectedItem())) {
+				if (this.treeView.getSelectionModel().getSelectedItem().getValue().isDirectory()) {
+					f = new File(this.treeView.getSelectionModel().getSelectedItem().getValue().getPath() + "\\"
+							+ this.textField.getText());
+				} else {
+					f = new File(this.treeView.getSelectionModel().getSelectedItem().getValue().getParent() + "\\"
+							+ this.textField.getText());
+				}
+				try {
+					if (!f.createNewFile()) {
+						this.main.error("Nouveau fichier", "Le fichier existe déjà");
+					}
+				} catch (IOException e) {
+					this.main.error("Nouveau fichier", "Impossible de créer ce fichier");
+				}
+			} else {
+				f = new File(this.main.getWorkspace().getWorkspace().getPath() + "\\" + this.textField.getText());
+				try {
+					if (!f.createNewFile()) {
+						this.main.error("Nouveau fichier", "Le fichier existe déjà");
+					}
+				} catch (IOException e) {
+					this.main.error("Nouveau fichier", "Impossible de créer ce fichier");
+				}
+			}
+		} else
+			this.main.error("Nouveau fichier", "Entrer un nom de fichier valide");
 	}
 
 	/**
 	 * Setter main
+	 * 
 	 * @param pfMain
 	 */
 	public void setMain(Main pfMain) {

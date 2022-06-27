@@ -28,9 +28,27 @@ public class Workspace {
 	 */
 	private void read(File folder) {
 		for (File fileEntry: folder.listFiles()) {
-			if (fileEntry.isDirectory()) read(fileEntry);
+			if (fileEntry.isDirectory()) {
+				this.data.add(fileEntry);
+				read(fileEntry);
+			}
 			else this.data.add(fileEntry);
 		}
+	}
+	
+	/**
+	 * Getter of Files by a name
+	 * @param name
+	 * @return ArrayList of Files
+	 */
+	public ArrayList<File> getFiles(String name) {
+		ArrayList<File> res = new ArrayList<File>();
+		int i, size;
+		size = this.data.size();
+		for (i = 0; i < size; i++) {
+			if (this.data.get(i).getName().equals(name)) res.add(this.data.get(i));
+		}
+		return res;
 	}
 	
 	/**
