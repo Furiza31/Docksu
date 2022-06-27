@@ -22,14 +22,16 @@ public class HomeController implements Initializable {
 	
 	@FXML
 	Button newFolder;
-	
-	@FXML
-	TreeView<String> treeView;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		newFile.setOnAction(event -> newFile());
 		newFolder.setOnAction(event -> newFolder());
+		searchBar.textProperty().addListener((observable, oldValue, newValue) -> searchBar(newValue));
+	}
+
+	private void searchBar(String research) {
+		System.out.println(research);
 	}
 
 	private void newFolder() {
