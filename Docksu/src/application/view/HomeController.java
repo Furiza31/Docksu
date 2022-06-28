@@ -12,11 +12,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.layout.BorderPane;
 
 public class HomeController implements Initializable {
 
 	private Main main;
+	private TreeView<File> treeView;
 
 	@FXML
 	private TextField textField;
@@ -28,7 +31,7 @@ public class HomeController implements Initializable {
 	private Button newFolder;
 
 	@FXML
-	private TreeView<File> treeView;
+	private BorderPane body;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -80,6 +83,35 @@ public class HomeController implements Initializable {
 			}
 		} else
 			this.main.error("Nouveau fichier", "Entrer un nom de fichier valide");
+	}
+	
+	/**
+	 * Show the workspace in the TreeView
+	 * @param parent folder
+	 */
+	public void showWorkspace() {
+		TreeItem<File> rootItem = new TreeItem<File>(this.main.getWorkspace().getWorkspace());
+		rootItem.setExpanded(true);
+		rootItem.getChildren().add(getWorkspaceContent(this.main.getWorkspace().getWorkspace()));
+		TreeView<File> treeView = new TreeView<File>(rootItem);
+		this.body.setCenter(treeView);
+		this.treeView = treeView;
+		treeView.setShowRoot(false);
+	}
+	
+	/**
+	 * get the workspace content (recursive)
+	 * @param folder the parent folder
+	 * @return TreeItem all files/folder in a folder
+	 */
+	private TreeItem<File> getWorkspaceContent(File folder) {
+		TreeItem<File> res = new TreeItem<File>(folder);
+		for (File fileEntry: folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				res.getChildren().add(getWorkspaceContent(fileEntry));
+			} else res.getChildren().add(new TreeItem<File>(fileEntry));
+		}
+		return res;
 	}
 
 	/**

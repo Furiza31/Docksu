@@ -82,6 +82,7 @@ public class Main extends Application {
 			BorderPane body = loader.load();
 			HomeController ctrl = loader.getController();
 			ctrl.setMain(this);
+			ctrl.showWorkspace();
 			
 			Scene scene = new Scene(body);
 			this.primaryStage.setScene(scene);

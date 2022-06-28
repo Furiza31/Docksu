@@ -37,21 +37,6 @@ public class Workspace {
 	}
 	
 	/**
-	 * Getter of Files by a name
-	 * @param name
-	 * @return ArrayList of Files
-	 */
-	public ArrayList<File> getFiles(String name) {
-		ArrayList<File> res = new ArrayList<File>();
-		int i, size;
-		size = this.data.size();
-		for (i = 0; i < size; i++) {
-			if (this.data.get(i).getName().equals(name)) res.add(this.data.get(i));
-		}
-		return res;
-	}
-	
-	/**
 	 * Getter data
 	 * @return data of the workspace
 	 */
