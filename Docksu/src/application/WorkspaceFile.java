@@ -22,6 +22,14 @@ public class WorkspaceFile extends File {
 		super(uri);
 	}
 	
+	public WorkspaceFile(File file) {
+		super(file.getPath());
+	}
+	
+	public WorkspaceFile(WorkspaceFile file) {
+		super(file.getPath());
+	}
+	
 	@Override
 	public String toString() {
 		return super.getName();

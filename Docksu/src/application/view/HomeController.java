@@ -55,35 +55,29 @@ public class HomeController implements Initializable {
 	 * If nothing is selected, the workspace folder will be selected
 	 */
 	private void newFile() {
-		WorkspaceFile f;
+		TreeItem<WorkspaceFile> parent = this.treeView.getTreeItem(0);
+		WorkspaceFile f = new WorkspaceFile(this.main.getWorkspace().getWorkspace().getPath() + "\\" + this.textField.getText());
 		if (!this.textField.getText().isEmpty()) {
 			if (!Objects.isNull(this.treeView.getSelectionModel().getSelectedItem())) {
 				if (this.treeView.getSelectionModel().getSelectedItem().getValue().isDirectory()) {
+					parent = this.treeView.getSelectionModel().getSelectedItem();
 					f = new WorkspaceFile(this.treeView.getSelectionModel().getSelectedItem().getValue().getPath() + "\\"
 							+ this.textField.getText());
 				} else {
+					parent = this.treeView.getSelectionModel().getSelectedItem().getParent();
 					f = new WorkspaceFile(this.treeView.getSelectionModel().getSelectedItem().getValue().getParent() + "\\"
 							+ this.textField.getText());
 				}
-				try {
-					if (!f.createNewFile()) {
-						this.main.error("Nouveau fichier", "Le fichier existe déjà");
-					}
-				} catch (IOException e) {
-					this.main.error("Nouveau fichier", "Impossible de créer ce fichier");
-				}
-			} else {
-				f = new WorkspaceFile(this.main.getWorkspace().getWorkspace().getPath() + "\\" + this.textField.getText());
-				try {
-					if (!f.createNewFile()) {
-						this.main.error("Nouveau fichier", "Le fichier existe déjà");
-					}
-				} catch (IOException e) {
-					this.main.error("Nouveau fichier", "Impossible de créer ce fichier");
-				}
 			}
-		} else
-			this.main.error("Nouveau fichier", "Entrer un nom de fichier valide");
+			try {
+				if (!f.createNewFile()) {
+					this.main.error("Nouveau fichier", "Le fichier existe déjà");
+				} else parent.getChildren().add(new TreeItem<WorkspaceFile>(new WorkspaceFile(f)));
+			} catch (IOException e) {
+				this.main.error("Nouveau fichier", "Impossible de créer ce fichier");
+			}
+		} else this.main.error("Nouveau fichier", "Entrer un nom de fichier valide");
+		this.textField.setText("");
 	}
 	
 	/**
@@ -108,8 +102,8 @@ public class HomeController implements Initializable {
 		TreeItem<WorkspaceFile> res = new TreeItem<WorkspaceFile>(folder);
 		for (File fileEntry: folder.listFiles()) {
 			if (fileEntry.isDirectory()) {
-				res.getChildren().add(getWorkspaceContent(new WorkspaceFile(fileEntry.getPath())));
-			} else res.getChildren().add(new TreeItem<WorkspaceFile>(new WorkspaceFile(fileEntry.getPath())));
+				res.getChildren().add(getWorkspaceContent(new WorkspaceFile(fileEntry)));
+			} else res.getChildren().add(new TreeItem<WorkspaceFile>(new WorkspaceFile(fileEntry)));
 		}
 		return res;
 	}
