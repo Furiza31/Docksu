@@ -1,5 +1,7 @@
 package application.view;
 
+import application.WorkspaceFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -18,7 +20,7 @@ import javafx.scene.layout.BorderPane;
 public class HomeController implements Initializable {
 
 	private Main main;
-	private TreeView<File> treeView;
+	private TreeView<WorkspaceFile> treeView;
 
 	@FXML
 	private TextField textField;
@@ -53,14 +55,14 @@ public class HomeController implements Initializable {
 	 * If nothing is selected, the workspace folder will be selected
 	 */
 	private void newFile() {
-		File f;
+		WorkspaceFile f;
 		if (!this.textField.getText().isEmpty()) {
 			if (!Objects.isNull(this.treeView.getSelectionModel().getSelectedItem())) {
 				if (this.treeView.getSelectionModel().getSelectedItem().getValue().isDirectory()) {
-					f = new File(this.treeView.getSelectionModel().getSelectedItem().getValue().getPath() + "\\"
+					f = new WorkspaceFile(this.treeView.getSelectionModel().getSelectedItem().getValue().getPath() + "\\"
 							+ this.textField.getText());
 				} else {
-					f = new File(this.treeView.getSelectionModel().getSelectedItem().getValue().getParent() + "\\"
+					f = new WorkspaceFile(this.treeView.getSelectionModel().getSelectedItem().getValue().getParent() + "\\"
 							+ this.textField.getText());
 				}
 				try {
@@ -71,7 +73,7 @@ public class HomeController implements Initializable {
 					this.main.error("Nouveau fichier", "Impossible de créer ce fichier");
 				}
 			} else {
-				f = new File(this.main.getWorkspace().getWorkspace().getPath() + "\\" + this.textField.getText());
+				f = new WorkspaceFile(this.main.getWorkspace().getWorkspace().getPath() + "\\" + this.textField.getText());
 				try {
 					if (!f.createNewFile()) {
 						this.main.error("Nouveau fichier", "Le fichier existe déjà");
@@ -89,13 +91,12 @@ public class HomeController implements Initializable {
 	 * @param parent folder
 	 */
 	public void showWorkspace() {
-		TreeItem<File> rootItem = new TreeItem<File>(this.main.getWorkspace().getWorkspace());
-		rootItem.setExpanded(true);
+		TreeItem<WorkspaceFile> rootItem = new TreeItem<WorkspaceFile>(this.main.getWorkspace().getWorkspace());
 		rootItem.getChildren().add(getWorkspaceContent(this.main.getWorkspace().getWorkspace()));
-		TreeView<File> treeView = new TreeView<File>(rootItem);
-		this.body.setCenter(treeView);
-		this.treeView = treeView;
-		treeView.setShowRoot(false);
+		rootItem.setExpanded(true);
+		this.treeView = new TreeView<WorkspaceFile>(rootItem);
+		this.treeView.setShowRoot(false);
+		this.body.setCenter(this.treeView);
 	}
 	
 	/**
@@ -103,12 +104,12 @@ public class HomeController implements Initializable {
 	 * @param folder the parent folder
 	 * @return TreeItem all files/folder in a folder
 	 */
-	private TreeItem<File> getWorkspaceContent(File folder) {
-		TreeItem<File> res = new TreeItem<File>(folder);
+	private TreeItem<WorkspaceFile> getWorkspaceContent(WorkspaceFile folder) {
+		TreeItem<WorkspaceFile> res = new TreeItem<WorkspaceFile>(folder);
 		for (File fileEntry: folder.listFiles()) {
 			if (fileEntry.isDirectory()) {
-				res.getChildren().add(getWorkspaceContent(fileEntry));
-			} else res.getChildren().add(new TreeItem<File>(fileEntry));
+				res.getChildren().add(getWorkspaceContent(new WorkspaceFile(fileEntry.getPath())));
+			} else res.getChildren().add(new TreeItem<WorkspaceFile>(new WorkspaceFile(fileEntry.getPath())));
 		}
 		return res;
 	}
