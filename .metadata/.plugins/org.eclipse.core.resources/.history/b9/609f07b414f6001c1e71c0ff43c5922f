@@ -1,0 +1,18 @@
+package application;
+
+import java.io.File;
+import java.util.Objects;
+
+public class WorkspaceFile {
+	
+	File path;
+	File parent;
+
+	public WorkspaceFile (WorkspaceFile parent, String name, WorkspaceFileType type) {
+		if (Objects.isNull(parent)) {
+			this.parent = null;
+			this.path = new File(System.getProperty("user.dir") + "\\Workspace\\" + name);
+		}
+	}
+	
+}

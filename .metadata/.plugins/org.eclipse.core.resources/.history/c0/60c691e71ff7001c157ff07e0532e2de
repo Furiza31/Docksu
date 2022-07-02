@@ -1,0 +1,16 @@
+package application;
+
+import java.net.URI;
+
+public class File extends java.io.File {
+	
+	
+	
+	public File(URI uri) {
+		super(uri);
+	}
+
+	public String toString() {
+		super.getName();
+	}
+}

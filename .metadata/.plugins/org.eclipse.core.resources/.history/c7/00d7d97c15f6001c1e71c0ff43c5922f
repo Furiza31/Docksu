@@ -1,0 +1,6 @@
+package application;
+
+public enum WorkspaceFileType {
+	FICHIER,
+	DOSSIER
+}
