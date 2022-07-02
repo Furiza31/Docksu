@@ -1,7 +1,0 @@
-package application;
-
-public class File extends java.io.File {
-	public String toString() {
-		
-	}
-}
